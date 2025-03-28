@@ -1,9 +1,12 @@
 const express  = require("express");
 const db = require("./db");
 const {nlToSql } = require("./queryEng");
+const authMiddleware = require("./auth");
 
 
 const router = express.Router();
+
+router.use(authMiddleware)
 
 router.post("/query", (req,res) => {
     const { question } = req.body;
