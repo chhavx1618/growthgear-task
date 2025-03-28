@@ -15,7 +15,10 @@ The task is to make a lightweight REST API for mimicing an AI querying engine us
 ### Testing the commands
 
 1. To test the commands, run the following requests in a different terminal. Ensure that the server is running. 
-- 
+-  curl -X POST http://localhost:5000/api/query \
+     -H "Authorization: Bearer this_is_secure_enough,right?" \
+     -H "Content-Type: application/json" \
+     -d '{"question": "What is the total revenue?"}'
 -
 -
 
