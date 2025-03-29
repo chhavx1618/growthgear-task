@@ -9,7 +9,7 @@ function authMiddleware(req, res, next) {
         return res.status(401).json({ error: "Unauthorized: Invalid API key" });
     }
 
-    next(); //proceeding only for authenticated requests
+    next(); 
 }
 
 module.exports = authMiddleware;

@@ -30,7 +30,7 @@ router.post("/explain", (req,res) => {
 
     if (!sqlQuery) return res.status(400).json({error: "query not supported."});
 
-    res.json({ explanation : `your query is translated to: ${explanation}`});
+    res.json({ explanation : `${explanation}`});
 
 
 });
