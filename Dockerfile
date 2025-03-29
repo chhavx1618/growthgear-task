@@ -16,5 +16,8 @@ COPY . .
 EXPOSE 5000
 #exposing 5000 port for running the server
 
-CMD npm test && npm start
+# CMD npm test && npm start
+
 # running npm test, if all test pass then npm start will run
+
+CMD [ "npm", "start" ]

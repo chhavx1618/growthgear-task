@@ -26,10 +26,11 @@ router.post("/query", (req, res) => {
 router.post("/explain", (req,res) => {
     const { question } = req.body;
     const sqlQuery = nlToSql(question);
+    const explanation = nlToSql(explanation);
 
     if (!sqlQuery) return res.status(400).json({error: "query not supported."});
 
-    res.json({ explanation : `your query is translated to: ${sqlQuery}`});
+    res.json({ explanation : `your query is translated to: ${explanation}`});
 
 
 });
