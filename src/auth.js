@@ -1,4 +1,6 @@
-const API_KEY = "this_is_secure_enough,right?"; // Replace with a strong key
+require("dotenv").config();
+
+const API_KEY = process.env.API_KEY; 
 
 function authMiddleware(req, res, next) {
     const userKey = req.headers["authorization"];
@@ -7,7 +9,7 @@ function authMiddleware(req, res, next) {
         return res.status(401).json({ error: "Unauthorized: Invalid API key" });
     }
 
-    next(); // Proceed if authenticated
+    next(); //proceeding only for authenticated requests
 }
 
 module.exports = authMiddleware;
