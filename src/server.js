@@ -10,7 +10,7 @@ app.use("/api", routes);
 const PORT = process.env.PORT || 5000;
 
 app.get("/", (req,res) => {
-    res.send("running");
+    res.send("Hello World! This is A mini query engine. I'm running perfectly, thanks!");
 });
 
 app.listen(PORT, () => {

@@ -9,29 +9,50 @@ const router = express.Router();
 router.use(authMiddleware)
 
 
+// router.post("/query", (req, res) => {
+//     const { question } = req.body;
+//     const sqlQuery = nlToSql(question);
+
+//     if (!sqlQuery) return res.status(400).json({ error: "Query not supported." });
+
+//     db.all(sqlQuery, [], (err, rows) => {
+//         if (err) return res.status(500).json({ error: "Database error" });
+//         db.run("INSERT INTO history (question, sqlQuery) VALUES (?, ?)", [question, sqlQuery]);
+
+//         res.json({ result: rows });
+//     });
+// });
+
 router.post("/query", (req, res) => {
     const { question } = req.body;
-    const sqlQuery = nlToSql(question);
+    const { sql, explanation } = nlToSql(question);
 
-    if (!sqlQuery) return res.status(400).json({ error: "Query not supported." });
+    if (!sql) return res.status(400).json({ error: "Query not supported." });
 
-    db.all(sqlQuery, [], (err, rows) => {
-        if (err) return res.status(500).json({ error: "Database error" });
-        db.run("INSERT INTO history (question, sqlQuery) VALUES (?, ?)", [question, sqlQuery]);
+    db.all(sql, [], (err, rows) => {
+        if (err) {
+            console.error("Database error:", err.message);
+            return res.status(500).json({ error: "Database error" });
+        }
 
-        res.json({ result: rows });
+        // Insert history after successful execution
+        db.run("INSERT INTO history (question, sqlQuery) VALUES (?, ?)", [question, sql], (insertErr) => {
+            if (insertErr) console.error("Error saving history:", insertErr.message);
+        });
+
+        res.json({ result: rows || "empty" });
     });
 });
+
 
 router.post("/explain", (req,res) => {
     const { question } = req.body;
     const sqlQuery = nlToSql(question);
-    const explanation = nlToSql(explanation);
+    const explanation = nlToSql(question);
 
     if (!sqlQuery) return res.status(400).json({error: "query not supported."});
 
-    res.json({ explanation : `${explanation}`});
-
+ res.json({ explanation });
 
 });
 

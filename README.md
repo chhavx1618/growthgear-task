@@ -1,8 +1,83 @@
+
+# The Task
+
+The task is to make a lightweight REST API for mimicing an AI querying engine using file-based database (sqlite3), NodeJs and ExpressJs for the logic. 
+
+Our tool empowers non-technical teams to:
+
+-Ask complex business questions directly
+- Get instant, accurate insights from databases
+- Eliminate dependency on data teams
+- Make faster, data-driven decisions
+
+##### Completed Tasks 
+
+✅ Endpoint to simulate query processing 
+✅ Mock database connection - file-based sql
+✅ Basic query translation - Regex and rule based matching
+✅ /query, /validate, /explain endpoints created
+✅ Basic error handling, try catch, server responses implemented.
+➕ Additional testing of endpoints using Jest
+➕ Dockerfile for running containers
+➕ History table to access previous requests and commands
+
+### My Working
+
+To build this API, I first considered the real worl AI architecture -
+
+1. The input query is processed, the natural language is convered into structured queries, and ML models are used to predict the correct SQL needed.
+
+2. The predicted query is used to pull the data from database, and various optimizations such as caching, vector search, etc. are applied.
+
+3. AI models, LLMs, handle the queries and provide the final answer with explanations, additional suggestions, etc.
+
+Since the goal here is to mimic this working,
+
+1. I allowed user input by the API to be processed by a regex engine that maps user's questions to the relevant queries. 
+
+*Better Approach*: I would integrate AI models, either OpenAI or Llama. The queries would be sent to these models, and their response would be the final SQL output needed. This helps to generate the queries *dynamically*.
+
+Suggested code: 
+
+```sh 
+function getSql(naturalQuery) {
+     const response = await axios.post("<link_to_openAI/other_api>", {
+          model:"<chosen model>"
+          messages:[{role: "system", content: "convert natural language to SQL"}]
+     }, {
+          headers: { Authroization: `Bearer this-is-your-api-key` }
+     });
+
+     return response.data.message.content;
+}
+```
+
+*Better Approach - Local Processing*: Using spacy library might help for a faster response with no internet dependency. It will generate NLP based SQL queries, that can be run in the background and the final output can be easily provided to the user.
+
+2. Once the query is generated, I run it in a in-memory database. In-memory database has been used to ensure that the API remains lightweight (No I/O operations help in this case). The queries are run in the database and the output is sent back to our API.
+
+I have implemented *rule-based mapping* using regex in order to mimic the working of SQL on a database.
+
+3. Finally, the relevant explanation along with the correcct output is provided as the output for the user.
+
+
+### Additional Tasks 
+
+1. Docker build - Docker has been used in order to allow the API to work locally on any machine, avoiding any dependency conflicts or heavier computing.
+
+2. Jest Testing - Simple routes and endpoints testing has been implemented using jest. This is done to ensure that the API is running correctly, allowing proper authentication, correct responses, and blocking unsafe or incorrect requests.
+
+3. History table -  A history table has also been made in order to allow for logging of the user activity, tables, rows and information accessed. This can be proven to be useful while debugging, or when needing to refer to the past logs.
+
+
+![alt text](image.png)
+
+
 # Documentation
 
 Mini-query-engine is a simple, lightweight REST API aimed at mimicing the real world AI behaviour pipeline. It uses NodeJs for the backend, ExpressJs to build the API and sqlite3 for an in memory database.
 
-Mini-query-engine is deployed onto Railway.
+Mini-query-engine is deployed onto [Railway](growthgear-task-production.up.railway.app).
 
 This project is currently maintained.
 
@@ -157,12 +232,49 @@ If the key is missing or incorrect, you will receive a 401 Unauthorized response
 You can test the API using `curl` or Postman.
 
 #### Using `curl`
+
+1.   /query
+
 ```sh
 curl -X POST http://localhost:5000/api/query \
-     -H "Authorization: Bearer this_is_secure_enough,right?" \
+     -H "Authorization: Bearer <key>" \
      -H "Content-Type: application/json" \
      -d '{"question": "What is the total revenue?"}'
 ```
+Replace the question with different queries to get various different outputs.
+
+
+2. /validate
+
+```sh
+curl -X POST http://localhost:5000/api/validate \
+     -H "Authorization: Bearer <key>" \
+     -H "Content-Type: application/json" \
+     -d '{"question": "What is the total revenue?"}'
+```
+Replace the question with different queries to get various different outputs.
+
+
+3. /explain
+
+```sh
+curl -X POST http://localhost:5000/api/explain \
+     -H "Authorization: Bearer <key>" \
+     -H "Content-Type: application/json" \
+     -d '{"question": "What is the total revenue?"}'
+```
+Replace the question with different queries to get various different outputs.
+
+
+4. /history
+
+```sh
+curl -X POST http://localhost:5000/api/explain \
+     -H "Authorization: Bearer <key>" 
+```
+Replace the question with different queries to get various different outputs.
+
+
 #### Using Postman
 
 Set the request type to POST
@@ -198,63 +310,3 @@ Click Send to see the response.
 
 5. Testing: Jest
 
-
-
-# The Task
-
-The task is to make a lightweight REST API for mimicing an AI querying engine using in memory database (sqlite3), NodeJs and ExpressJs for the logic. 
-
-Our tool empowers non-technical teams to:
-
--Ask complex business questions directly
-- Get instant, accurate insights from databases
-- Eliminate dependency on data teams
-- Make faster, data-driven decisions
-
-### My Working
-
-To build this API, I first considered the real worl AI architecture -
-
-1. The input query is processed, the natural language is convered into structured queries, and ML models are used to predict the correct SQL needed.
-
-2. The predicted query is used to pull the data from database, and various optimizations such as caching, vector search, etc. are applied.
-
-3. AI models, LLMs, handle the queries and provide the final answer with explanations, additional suggestions, etc.
-
-Since the goal here is to mimic this working,
-
-1. I allowed user input by the API to be processed by a regex engine that maps user's questions to the relevant queries. 
-
-*Better Approach*: I would integrate AI models, either OpenAI or Llama. The queries would be sent to these models, and their response would be the final SQL output needed. This helps to generate the queries *dynamically*.
-
-Suggested code: 
-
-```sh 
-function getSql(naturalQuery) {
-     const response = await axios.post("<link_to_openAI/other_api>", {
-          model:"<chosen model>"
-          messages:[{role: "system", content: "convert natural language to SQL"}]
-     }, {
-          headers: { Authroization: `Bearer this-is-your-api-key` }
-     });
-
-     return response.data.message.content;
-}
-```
-
-*Better Approach - Local Processing*: Using spacy library might help for a faster response with no internet dependency. It will generate NLP based SQL queries, that can be run in the background and the final output can be easily provided to the user.
-
-2. Once the query is generated, I run it in a in-memory database. In-memory database has been used to ensure that the API remains lightweight (No I/O operations help in this case). The queries are run in the database and the output is sent back to our API.
-
-I have implemented *rule-based mapping* using regex in order to mimic the working of SQL on a database.
-
-3. Finally, the relevant explanation along with the correcct output is provided as the output for the user.
-
-
-### Additional Tasks 
-
-1. Docker build - Docker has been used in order to allow the API to work locally on any machine, avoiding any dependency conflicts or heavier computing.
-
-2. Jest Testing - Simple routes and endpoints testing has been implemented using jest. This is done to ensure that the API is running correctly, allowing proper authentication, correct responses, and blocking unsafe or incorrect requests.
-
-3. History table -  A history table has also been made in order to allow for logging of the user activity, tables, rows and information accessed. This can be proven to be useful while debugging, or when needing to refer to the past logs.
