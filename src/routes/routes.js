@@ -1,7 +1,7 @@
 const express  = require("express");
-const db = require("./db");
-const {nlToSql } = require("./queryEng");
-const authMiddleware = require("./auth");
+const db = require("../models/db");
+const {nlToSql } = require("../models/queryEng");
+const authMiddleware = require("../auth/auth");
 
 
 const router = express.Router();
